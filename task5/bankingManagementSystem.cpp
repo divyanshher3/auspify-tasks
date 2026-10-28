@@ -24,7 +24,7 @@ const string TRANSECTION_FILE_NAME ="TransectionRecord";
     }
 
     for(const account& ac : accou){
-        out<<ac.accnum<<" "<<ac.balance<<" "<<ac.name<<" "<<ac.PIN <<"\n"; 
+        out << ac.accnum << " " << ac.balance << " " << ac.PIN << " " << ac.name << "\n"; 
     }
  }
 
@@ -50,7 +50,7 @@ const string TRANSECTION_FILE_NAME ="TransectionRecord";
         out<<tr.accnum<<" "<<tr.amount<<" "<<tr.type<<" "<<"\n"; 
     
  }
-void Loadaccount(vector<account>& accounts){
+void LoadAccount(vector<account>& accounts){
     ifstream in(FILE_NAME);
     if(!in){return;}
 
@@ -72,7 +72,7 @@ void Loadtransection(vector <transection>& transec){
     }
 }
 
- void createAccount(const vector<account>& acco){
+ void createAccount( vector<account>& acco){
     account at;
    
     cout<<"Welcome!!!"<<endl;
@@ -81,6 +81,7 @@ void Loadtransection(vector <transection>& transec){
     for( const account& a : acco){
         if(a.accnum == at.accnum){
             cout<<"Account number already exist "<<endl;
+            return;
         }
     }
     cout<<"Enter the name of account holder "<<endl;
@@ -89,7 +90,7 @@ void Loadtransection(vector <transection>& transec){
     cin>>at.balance;
     cout<<"create the PIN for your account "<<endl;
     cin>>at.PIN;
-
+    acco.push_back(at);
  }
  void DisplayAccountDetails(const vector<account>& acco){
     int num;
@@ -147,9 +148,9 @@ void Loadtransection(vector <transection>& transec){
     cout<<"Account number does not exist "<<endl;
 
  }
- void withdraw(vector<account>& acco , vector<transection> tran){
-    int n , num;
-    int amount;
+ void withdraw(vector<account>& acco , vector<transection>& tran){
+    int  num;
+    double amount;
 
     cout<<"Enter the account number "<<endl;
     cin>>num;
@@ -162,7 +163,10 @@ void Loadtransection(vector <transection>& transec){
 
             cout<<"Enter the withdraw amount "<<endl;
             cin>> amount;
-
+            if (amount > act.balance) {
+             cout << "Insufficient balance!" << endl;
+             return;
+                }
             if(amount<=0){
                 cout<<"Invalid amount! It must be greater than 0 "<<endl;
                 return;
@@ -220,7 +224,7 @@ void Loadtransection(vector <transection>& transec){
                 cout<<"Invalid PIN ! transection cancelled!!"<<endl;
                 return;
             }
-            bool found =true;
+            bool found =false;
             cout<<"-------------Transection History------------"<<endl;
             for(transection tran : trans){
                 if(tran.accnum == n){
@@ -243,7 +247,7 @@ void Loadtransection(vector <transection>& transec){
     cout<<"Enter Your account number "<<endl;
     cin>>n;
 
-    for(account act: acco){
+    for(account& act: acco){
         if(act.accnum == n){
 
              if(!verifyPIN(act)){
@@ -269,7 +273,7 @@ void Loadtransection(vector <transection>& transec){
             }
 
 
-            for(account ac : acco){
+            for(account& ac : acco){
              if(ac.accnum == num){
                 ac.balance+=amount;
                 act.balance-=amount;
@@ -383,7 +387,7 @@ int main() {
     vector<account> acc;
     vector<transection> tran;
 
-    Loadaccount(acc);
+    LoadAccount(acc);
     Loadtransection(tran);
     int n;
 while(true){
@@ -401,7 +405,7 @@ while(true){
     <<"11. Exit"<<endl;
 
     cout<<"Enter your choice : ";
-    cin>>n;
+    
     if(!(cin>>n)){
         cin.clear();
         cin.ignore(10000 , '\n');
